@@ -460,7 +460,7 @@ void StepKernel::get_edge_from_map(
 	}
 }
 
-void StepKernel::write_step(std::string file_name, const std::string &unit, const std::string &schema)
+bool StepKernel::write_step(std::string file_name, const std::string &unit, const std::string &schema)
 {
 	std::time_t tt = std ::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
 	struct std::tm * ptm = std::localtime(&tt);
@@ -470,7 +470,7 @@ void StepKernel::write_step(std::string file_name, const std::string &unit, cons
 	std::ofstream stp_file;
 	stp_file.open(file_name);
 	if (!stp_file)
-		return;
+		return false;
 
 	// up to 15 significant digits so double precision coordinates survive a
 	// round trip (the stream default of 6 truncates them)
@@ -558,6 +558,7 @@ void StepKernel::write_step(std::string file_name, const std::string &unit, cons
 	stp_file << "ENDSEC;\n";
 	stp_file << "END-ISO-10303-21;\n";
 	stp_file.close();
+	return !stp_file.fail();
 }
 
 std::string StepKernel::read_line(std::ifstream &stp_file, bool skip_all_space)

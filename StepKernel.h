@@ -781,7 +781,7 @@ public:
 	// file_name - output STEP file
 	// unit - output length unit token: "mm" (default), "cm", "m", "in"
 	// schema - FILE_SCHEMA declaration: "203" (default) or "214"
-	void write_step(std::string file_name, const std::string &unit = "mm", const std::string &schema = "203");
+	bool write_step(std::string file_name, const std::string &unit = "mm", const std::string &schema = "203");
 	std::string read_line(std::ifstream &stp_file, bool skip_all_space);
 	void read_step(std::string file_name);
 	std::vector<Entity*> entities;

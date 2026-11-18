@@ -1,5 +1,9 @@
 cmake_minimum_required(VERSION 3.12)
-PROJECT (stltostp)
+PROJECT (stltostp VERSION 1.1.0)
+
+if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
+	set(CMAKE_BUILD_TYPE Release CACHE STRING "Build type" FORCE)
+endif()
 
 SET(STLTOSTP_SRC
 StepKernel.cpp
@@ -9,6 +13,10 @@ ENABLE_TESTING()
 set (CMAKE_CXX_STANDARD 11)
 
 ADD_EXECUTABLE (stltostp ${STLTOSTP_SRC})
+target_compile_definitions(stltostp PRIVATE STLTOSTP_VERSION="${PROJECT_VERSION}")
+if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
+	target_compile_options(stltostp PRIVATE -Wall -Wextra)
+endif()
 
 ADD_TEST(
 	NAME cat_dish
@@ -82,6 +90,11 @@ ADD_TEST(
 ADD_TEST(
 	NAME units_scale
 	COMMAND ${CMAKE_COMMAND} -DEXE=$<TARGET_FILE:stltostp> -DDIR=${PROJECT_SOURCE_DIR}/test -P ${PROJECT_SOURCE_DIR}/test/check_units_scale.cmake
+)
+
+ADD_TEST(
+	NAME robust_input
+	COMMAND ${CMAKE_COMMAND} -DEXE=$<TARGET_FILE:stltostp> -DDIR=${PROJECT_SOURCE_DIR}/test -P ${PROJECT_SOURCE_DIR}/test/check_robust_input.cmake
 )
 
 INSTALL(TARGETS ${PROJECT_NAME} DESTINATION "bin/")
